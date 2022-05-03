@@ -41,8 +41,14 @@ for issue in issues:
     file_name = f'{mo.group(1).zfill(2)}_{mo.group(2)}{mo.group(3)}{mo.group(4)}'
 
     # If file exists in FTP
-    if f'{file_name}.csv' in ftp_files:
-        print(f'{file_name} already in FTP. Skipped.')
+    if f'{file_name}.pdf' in ftp_files and f'{file_name}.csv' in ftp_files:
+        try:
+            os.remove(f'{os.environ["HOME"]}/{file_name}.csv')
+            os.remove(f'{os.environ["HOME"]}/{file_name}.pdf')
+            print(f'{file_name} already in FTP. Skipped.')
+        except:
+            print(f'{file_name} already in FTP. Skipped.')
+
 
     # If file is not in FTP
     elif f'{file_name}.csv' not in ftp_files and not os.path.isfile(f'{os.environ["HOME"]}/{file_name}.pdf'):
