@@ -45,7 +45,7 @@ for issue in issues:
         print(f'{file_name} already in FTP. Skipped.')
 
     # If file is not in FTP
-    elif f'{file_name}.csv' not in ftp_files:
+    elif f'{file_name}.csv' not in ftp_files and not os.path.isfile(f'{os.environ["HOME"]}/{file_name}.pdf'):
         print(f'Working on {file_name}: {issue["href"]}')
 
         try:
