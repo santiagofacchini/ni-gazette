@@ -20,9 +20,7 @@ ftp_connection = ftplib.FTP(
     passwd=os.environ['AG2_PASS'],
 )
 print(ftp_connection.getwelcome())
-ftp_directory = '/DO_Nicaragua/procesados/'
-ftp_connection.cwd(ftp_directory)
-ftp_files = ftp_connection.nlst()
+ftp_files = ftp_connection.nlst('/DO_Nicaragua/procesados/')
 ftp_connection.quit()
 
 # Get URL
@@ -67,11 +65,11 @@ for issue in issues:
                     f'día {mo.group(2)}/{mo.group(3)}/{mo.group(4)} (contenido '
                     f'completo)||Contenido completo|{mo.group(2)}/{mo.group(3)}/'
                     f'{mo.group(4)}|1|{total_pages}')
-        
+
         except PyPDF2.utils.PdfReadError as error:
             os.remove(f'{download_directory}/{file_name}.pdf')
             with open(f'{download_directory}/{file_name}_error.csv', 'w') as csv_file:
                 csv_file.write(f'Link: {issue["href"]}\nError: {error}')
-    
+
     else:
         print(f'An error occurred while processing {file_name}')
