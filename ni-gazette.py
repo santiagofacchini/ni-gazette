@@ -72,8 +72,8 @@ for issue in issues:
                 '-dNOPAUSE',
                 '-sColorConversionStrategy=RGB',
                 '-sDEVICE=pdfwrite',
-                f'-sOutputFile={download_directory}{pdf_file}',
-                f'{dir}{pdf_file}',
+                f'-sOutputFile={download_directory}/{pdf_file}',
+                f'{download_directory}/raw{pdf_file}',
             ]
             ghostscript.Ghostscript(*args)
             os.remove(f'{download_directory}/raw-{pdf_file}')
