@@ -72,11 +72,11 @@ for issue in issues:
                 '-dNOPAUSE',
                 '-sColorConversionStrategy=RGB',
                 '-sDEVICE=pdfwrite',
-                f'-sOutputFile={download_directory}/{pdf_file}',
-                f'{download_directory}/raw{pdf_file}',
+                f'-sOutputFile={download_directory}/{file_name}.pdf',
+                f'{download_directory}/raw-{file_name}.pdf',
             ]
             ghostscript.Ghostscript(*args)
-            os.remove(f'{download_directory}/raw-{pdf_file}')
+            os.remove(f'{download_directory}/raw-{file_name}.pdf')
 
             # Create CSV file
             with open(f'{download_directory}/{file_name}.csv', 'w') as csv_file:
