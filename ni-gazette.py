@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import requests
 import bs4
 import PyPDF2
-
+import ghostscript
 
 # Load environment variables from .env file (must be in ~)
 load_dotenv(f'{os.environ["HOME"]}/.env')
@@ -58,12 +58,25 @@ for issue in issues:
             pdf_content = requests.get(issue['href']).content
 
             # Create PDF file
-            with open(f'{download_directory}/{file_name}.pdf', 'wb') as pdf_file:
+            with open(f'{download_directory}/raw-{file_name}.pdf', 'wb') as pdf_file:
                 pdf_file.write(pdf_content)
 
             # Count PDF pages
-            read_pdf = PyPDF2.PdfFileReader(f'{download_directory}/{file_name}.pdf')
+            read_pdf = PyPDF2.PdfFileReader(f'{download_directory}/raw-{file_name}.pdf')
             total_pages = read_pdf.numPages
+
+            # Ghostscript
+            args = [
+                '-dPDFA=1',
+                '-dBATCH',
+                '-dNOPAUSE',
+                '-sColorConversionStrategy=RGB',
+                '-sDEVICE=pdfwrite',
+                f'-sOutputFile={download_directory}{pdf_file}',
+                f'{dir}{pdf_file}',
+            ]
+            ghostscript.Ghostscript(*args)
+            os.remove(f'{download_directory}/raw-{pdf_file}')
 
             # Create CSV file
             with open(f'{download_directory}/{file_name}.csv', 'w') as csv_file:
