@@ -49,46 +49,39 @@ for issue in issues:
         except:
             print(f'{file_name} already in FTP. Skipped.')
 
-
-    # If file is not in FTP
+    # If file is neither in FTP nor in $HOME
     elif f'{file_name}.csv' not in ftp_files and not os.path.isfile(f'{os.environ["HOME"]}/{file_name}.pdf'):
         print(f'Working on {file_name}: {issue["href"]}')
 
-        try:
-            pdf_content = requests.get(issue['href']).content
+        pdf_content = requests.get(issue['href']).content
 
-            # Create PDF file
-            with open(f'{download_directory}/raw-{file_name}.pdf', 'wb') as pdf_file:
-                pdf_file.write(pdf_content)
+        # Create PDF file
+        with open(f'{download_directory}/raw-{file_name}.pdf', 'wb') as pdf_file:
+            pdf_file.write(pdf_content)
 
-            # Count PDF pages
-            read_pdf = PyPDF2.PdfFileReader(f'{download_directory}/raw-{file_name}.pdf')
-            total_pages = read_pdf.numPages
+        # Count PDF pages
+        read_pdf = PyPDF2.PdfFileReader(f'{download_directory}/raw-{file_name}.pdf')
+        total_pages = read_pdf.numPages
 
-            # Ghostscript
-            args = [
-                '-dPDFA=1',
-                '-dBATCH',
-                '-dNOPAUSE',
-                '-sColorConversionStrategy=RGB',
-                '-sDEVICE=pdfwrite',
-                f'-sOutputFile={download_directory}/{file_name}.pdf',
-                f'{download_directory}/raw-{file_name}.pdf',
-            ]
-            ghostscript.Ghostscript(*args)
-            os.remove(f'{download_directory}/raw-{file_name}.pdf')
+        # Ghostscript
+        args = [
+            '-dPDFA=1',
+            '-dBATCH',
+            '-dNOPAUSE',
+            '-sColorConversionStrategy=RGB',
+            '-sDEVICE=pdfwrite',
+            f'-sOutputFile={download_directory}/{file_name}.pdf',
+            f'{download_directory}/raw-{file_name}.pdf',
+        ]
+        ghostscript.Ghostscript(*args)
+        os.remove(f'{download_directory}/raw-{file_name}.pdf')
 
-            # Create CSV file
-            with open(f'{download_directory}/{file_name}.csv', 'w') as csv_file:
-                csv_file.write(f'La Gaceta, Diario Oficial Nº {mo.group(1)} del '
-                    f'día {mo.group(2)}/{mo.group(3)}/{mo.group(4)} (contenido '
-                    f'completo)||Contenido completo|{mo.group(2)}/{mo.group(3)}/'
-                    f'{mo.group(4)}|1|{total_pages}')
-
-        except PyPDF2.utils.PdfReadError as error:
-            os.remove(f'{download_directory}/{file_name}.pdf')
-            with open(f'{download_directory}/{file_name}_error.csv', 'w') as csv_file:
-                csv_file.write(f'Link: {issue["href"]}\nError: {error}')
+        # Create CSV file
+        with open(f'{download_directory}/{file_name}.csv', 'w') as csv_file:
+            csv_file.write(f'La Gaceta, Diario Oficial Nº {mo.group(1)} del '
+                f'día {mo.group(2)}/{mo.group(3)}/{mo.group(4)} (contenido '
+                f'completo)||Contenido completo|{mo.group(2)}/{mo.group(3)}/'
+                f'{mo.group(4)}|1|{total_pages}')
 
     else:
         print(f'An error occurred while processing {file_name}')
