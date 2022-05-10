@@ -81,4 +81,4 @@ for issue in issues:
                 f'{mo.group(4)}|1|{total_pages}')
 
     else:
-        print(f'{file_name} already in {download_directory}. Skipped')
+        print(f'{file_name} already in {download_directory}. Skipped.')
