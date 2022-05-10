@@ -9,4 +9,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD [ "python", "./ni-gazette.py" ]
+CMD [ "python", "/usr/src/app/ni-gazette.py" ]
