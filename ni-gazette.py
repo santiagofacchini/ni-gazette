@@ -51,7 +51,7 @@ for rdd in response.json()['rdds']:
         rdd_rddid = rdd['rddid']
 
         # vLex name format
-        vlex_name = f'{rdd_number}_{rdd_date.replace("/", "")}'
+        vlex_name = f'{rdd_number.zfill(2)}_{rdd_date.replace("/", "")}'
 
         # If file exists in FTP
         if f'{vlex_name}.pdf' in ftp_files and f'{vlex_name}.csv' in ftp_files:
