@@ -1,11 +1,13 @@
 import os
 import ftplib
-from unittest import skip
 import requests
 import urllib.parse
 import PyPDF2
 import ghostscript
 
+
+# Year
+year = 2022
 
 # Download directory
 download_directory = '/usr/src/app/downloads/'
@@ -23,11 +25,11 @@ ftp_connection.quit()
 # URL
 seed_url = 'http://digesto.asamblea.gob.ni/consultas/util/ws/proxy.php'
 
-# 2022
+# Payload
 payload = {
     'hddQueryType': 'getRdds',
-    'txtDatePublishFrom': '2022/1/1',
-    'txtDatePublishTo': '2022/12/31'
+    'txtDatePublishFrom': f'{year}/1/1',
+    'txtDatePublishTo': f'{year}/12/31'
 }
 
 response = requests.post(
@@ -64,17 +66,11 @@ for rdd in response.json()['rdds']:
         elif f'{vlex_name}.csv' not in ftp_files and not os.path.isfile(f'{download_directory}{vlex_name}.pdf'):
             print(f'Working on {vlex_name}: {rdd_rddid}')
 
-            # GET query params
-            query_params = {
-                'type': 'rdd',
-                'rdd': urllib.parse.quote(rdd_rddid, safe=''), # Escape special characters
-            }
+            # Encode rddid
+            encoded_rddid = urllib.parse.quote(rdd_rddid, safe='')
 
             # Bytes response -> PDF content
-            pdf_content = requests.get(
-                url=f'http://digesto.asamblea.gob.ni/consultas/util/pdf.php',
-                data=query_params,
-            ).content
+            pdf_content = requests.get(f'http://digesto.asamblea.gob.ni/consultas/util/pdf.php?type=rdd&rdd={encoded_rddid}').content
 
             # Create raw PDF file
             with open(f'{download_directory}raw-{vlex_name}.pdf', 'wb') as pdf_file:
