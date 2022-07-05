@@ -43,7 +43,7 @@ for rdd in response.json()['rdds']:
     if rdd['numPublica'] == '':
         source_issues = rdd['totalRegistros']
         print(f'Source issues: {source_issues}')
-    
+
     else:
         # JSON response data
         rdd_date = rdd['fecPublica']
@@ -101,6 +101,3 @@ for rdd in response.json()['rdds']:
                 f'día {rdd_date} (contenido completo)||Contenido completo|'
                 f'{rdd_date}|1|{total_pages}'
             )
-
-        else:
-            print(f'{vlex_name} already in {download_directory}. Skipped.')
